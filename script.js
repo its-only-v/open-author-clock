@@ -4,11 +4,21 @@ import { config } from './config.js';
 let quotes = [];
 let wakeLock = null;
 
+// Search engine URLs
+const searchEngines = {
+  duckduckgo: 'https://duckduckgo.com/?q=',
+  google: 'https://www.google.com/search?q=',
+  bing: 'https://www.bing.com/search?q=',
+  brave: 'https://search.brave.com/search?q=',
+  startpage: 'https://www.startpage.com/do/search?q='
+};
+
 /**
  * Initialize the application
  */
 async function init() {
   try {
+    setupSearch();
     await loadQuotes();
     setupWakeLock();
     setupFallbackKeepAwake();
@@ -242,11 +252,96 @@ function setupFallbackKeepAwake() {
  */
 function applyEReaderStyles() {
   const isEReader = /\b(Kindle|NOOK|Kobo|Sony Reader)\b/i.test(navigator.userAgent);
-  
+
   if (isEReader) {
     document.body.style.backgroundColor = '#ffffff';
     document.body.style.color = '#000000';
     console.log('E-reader styles applied');
+  }
+}
+
+/**
+ * Setup search functionality
+ */
+function setupSearch() {
+  const searchForm = document.getElementById('searchForm');
+  const searchInput = document.getElementById('searchInput');
+  const searchEngineSelect = document.getElementById('searchEngine');
+
+  if (!searchForm || !searchInput || !searchEngineSelect) {
+    console.warn('Search elements not found');
+    return;
+  }
+
+  // Load saved search engine preference
+  loadSearchEnginePreference();
+
+  // Save search engine preference when changed
+  searchEngineSelect.addEventListener('change', saveSearchEnginePreference);
+
+  // Handle search form submission
+  searchForm.addEventListener('submit', handleSearch);
+
+  // Focus search input on '/' key press
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== searchInput) {
+      e.preventDefault();
+      searchInput.focus();
+    }
+  });
+}
+
+/**
+ * Handle search form submission
+ */
+function handleSearch(e) {
+  e.preventDefault();
+
+  const searchInput = document.getElementById('searchInput');
+  const searchEngineSelect = document.getElementById('searchEngine');
+
+  const query = searchInput.value.trim();
+  const engine = searchEngineSelect.value;
+
+  if (!query) return;
+
+  const searchUrl = searchEngines[engine] + encodeURIComponent(query);
+  window.location.href = searchUrl;
+}
+
+/**
+ * Save search engine preference to Chrome storage
+ */
+function saveSearchEnginePreference() {
+  const searchEngineSelect = document.getElementById('searchEngine');
+  const engine = searchEngineSelect.value;
+
+  if (typeof chrome !== 'undefined' && chrome.storage) {
+    chrome.storage.sync.set({ searchEngine: engine }, () => {
+      console.log('Search engine preference saved:', engine);
+    });
+  } else {
+    localStorage.setItem('searchEngine', engine);
+  }
+}
+
+/**
+ * Load search engine preference from Chrome storage
+ */
+function loadSearchEnginePreference() {
+  const searchEngineSelect = document.getElementById('searchEngine');
+
+  if (typeof chrome !== 'undefined' && chrome.storage) {
+    chrome.storage.sync.get(['searchEngine'], (result) => {
+      if (result.searchEngine) {
+        searchEngineSelect.value = result.searchEngine;
+      }
+    });
+  } else {
+    const savedEngine = localStorage.getItem('searchEngine');
+    if (savedEngine) {
+      searchEngineSelect.value = savedEngine;
+    }
   }
 }
 

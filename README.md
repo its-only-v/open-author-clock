@@ -1,6 +1,14 @@
 # Open Author Clock ⏰
 
-An open-source, web-based implementation of the Author Clock Kickstarter project intended to run in an web browser.
+An open-source, web-based implementation of the Author Clock Kickstarter project that runs as a Chrome new tab extension with integrated web search.
+
+## ✨ Features ✨
+
+- **Literary Clock**: Display time-relevant quotes from literature for every minute of the day
+- **Integrated Search**: Search the web directly from your new tab page
+- **Multiple Search Engines**: Choose from DuckDuckGo (default), Google, Bing, Brave, or Startpage
+- **Keyboard Shortcuts**: Press `/` to instantly focus the search bar
+- **Dark Mode**: Automatic dark mode support based on system preferences
 
 ## ✨ See It in Action ✨
 
@@ -18,6 +26,18 @@ This project was sparked by two main projects:
 - [The Author Clock](https://www.authorclock.com): A dedicated gadget that tells time through literary quotes, offering a new hand-picked passage every minute.
 
 - The [literaryclock repo](https://github.com/elegantalchemist/literaryclock) by [elegantalchemist](https://github.com/elegantalchemist): The idea of a literary clock already executed on the Kindle Keyboard using Python.
+
+## Installation as Chrome Extension
+
+To use this as your Chrome new tab page:
+
+1. Clone or download this repository
+2. Open Chrome and go to `chrome://extensions/`
+3. Enable "Developer mode" in the top right
+4. Click "Load unpacked" and select the project folder
+5. Open a new tab to see the literary clock with search functionality
+
+For detailed installation instructions, see [CHROME_EXTENSION.md](CHROME_EXTENSION.md).
 
 ## Configuration
 
